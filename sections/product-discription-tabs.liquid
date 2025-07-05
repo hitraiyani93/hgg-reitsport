@@ -1,0 +1,339 @@
+<style>
+.tabs-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.tab-pane.active ul {
+    padding-left: 0em;
+  margin-inline-start: 1em;
+      margin-top: 0em;
+}
+
+.tabs-container .tabs-nav li {
+  list-style-type: none;
+}
+
+.tabs-content h1, h2, h3, h4, h5 {
+  color: #0c7bb6;
+}
+
+.tabs-nav {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 0px !important;
+  margin: 0;
+}
+
+.tab-item {
+  padding: 10px 20px;
+  cursor: pointer;
+  background: #eeeeee;
+  margin-right: 5px;
+  transition: background 0.3s;
+}
+
+.tab-item.active {
+  background-color: #043A97;
+  color: #ffffff;
+  border-bottom-color: #043A97;
+}
+
+.tab-pane {
+  display: none;
+}
+
+.tab-pane.active {
+  display: block;
+}
+
+/* Mobile Styles (Accordion) */
+@media (max-width: 786px) {
+  .tabs-nav {
+    display: block; /* Stack items vertically */
+    border-bottom: none; /* Remove tab border */
+  }
+
+  .tab-item, .tab-item.active {
+    margin-right: 0;
+    margin-bottom: 20px;
+    background: #fff;
+    -webkit-tap-highlight-color: transparent;    
+    color: #404040;
+    border-radius: 4px;
+    padding: 15px;
+    position: relative;
+    font-size: 1.3rem;
+    font-weight: 600;
+  }
+  
+  .tab-item::after {
+    content: '';
+  }
+
+  .tab-item.active::after {
+    content: '' !important;
+  }
+
+  .tab-pane {
+    border-top: none;
+    padding: 0 25px;
+    margin-bottom: 10px;
+    background: #fff !important;
+    margin-top: -23px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+    display: block;
+  }
+}
+
+.accordion-icon {
+  float: right;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.tabs-mobile .metafield-rich_text_field{
+  padding: 0px;
+}
+
+@media screen and (min-width: 786px){
+  table.product-table {
+    background: #fff;
+    margin-bottom: 0px !important;
+    padding-bottom: 20px;
+  }
+  .tab-pane.active {
+    display: block;
+    background: #fff;
+    padding: 35px;
+  }
+}
+</style>
+
+<div class="tabs-container">
+  {% assign is_mobile = true %}
+  {% capture screen_width_check %}
+    <style>
+      @media (min-width: 787px) {
+        .tabs-container .tabs-mobile { display: none !important; }
+      }
+      @media (max-width: 786px) {
+        .tabs-container .tabs-desktop { display: none !important; }
+      }
+    </style>
+  {% endcapture %}
+  {{ screen_width_check }}
+
+  <!-- ✅ Mobile Accordion View -->
+  
+<div class="tabs-mobile">
+  <h3 class="collapsible-tabs__heading collapsible-tabs__content" id="faq-produktinformationen">
+          {{ section.settings.main }}
+        </h3>
+{% for block in section.blocks %}
+  {% if block.settings.tab_content != blank or block.settings.tab_page != blank %}
+    <div class="tab-item" onclick="handleAccordionClick(this)">
+      {{ block.settings.title }}
+      <span class="accordion-icon">+</span>
+    </div>
+    <div class="tab-pane">
+      {% if block.settings.tab_page != blank and block.settings.show_link %}
+        {{ pages[block.settings.tab_page].content }}
+      {% else %}
+        {{ block.settings.tab_content }}
+      {% endif %}
+      {% if block.settings.file_label != blank %}
+        <a style="color:#4040a0;" target="blank" href="{{ block.settings.file_label }}">Download</a>
+      {% endif %}
+    </div>
+  {% endif %}
+{% endfor %}
+</div>
+
+
+<script>
+function handleAccordionClick(clickedTab) {
+  const tabPane = clickedTab.nextElementSibling;
+  const isActive = tabPane.classList.contains('active');
+
+  if (isActive) {
+    clickedTab.classList.remove('active');
+    tabPane.style.maxHeight = null;
+    tabPane.classList.remove('active');
+    clickedTab.querySelector('.accordion-icon').textContent = '+';
+  } else {
+    // Collapse all
+    document.querySelectorAll('.tabs-mobile .tab-item').forEach(item => {
+      item.classList.remove('active');
+      item.querySelector('.accordion-icon').textContent = '+';
+    });
+    document.querySelectorAll('.tabs-mobile .tab-pane').forEach(pane => {
+      pane.classList.remove('active');
+      pane.style.maxHeight = null;
+    });
+
+    // Expand current
+    clickedTab.classList.add('active');
+    tabPane.classList.add('active');
+    tabPane.style.maxHeight = tabPane.scrollHeight + "px";
+    clickedTab.querySelector('.accordion-icon').textContent = '−';
+  }
+}
+</script>
+
+
+
+  <!-- ✅ Desktop Tab View (unchanged) -->
+  <div class="tabs-desktop">
+    <h3 class="collapsible-tabs__heading collapsible-tabs__content" id="faq-produktinformationen">
+         {{ section.settings.main }}
+        </h3>
+    <ul class="tabs-nav">
+      {% for block in section.blocks %}
+        {% if block.settings.tab_content != blank or block.settings.tab_page != blank %}
+          <li class="tab-item {% if forloop.first %}active{% endif %}" data-tab="tab-{{ block.id }}">
+            {{ block.settings.title }}
+          </li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+
+    <div class="tabs-content">
+      {% for block in section.blocks %}
+        <div class="tab-pane {% if forloop.first %}active{% endif %}" id="tab-{{ block.id }}">
+          {% if block.settings.tab_page != blank and block.settings.show_link %}
+            {{ pages[block.settings.tab_page].content }}
+          {% else %}
+            {{ block.settings.tab_content }}
+          {% endif %}
+          {% if block.settings.file_label != blank %}
+            <a style="color:#4040a0;" target="blank" href="{{ block.settings.file_label }}">Download</a>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+
+{% schema %}
+{
+  "name": "Product Description Tabs",
+  "tag": "section",
+  "class": "section product-description-tabs",
+  "settings": [
+     {
+  "type": "text",
+  "id": "main",
+  "label": "enter the Title",
+  "info": "Enter the section title (supports dynamic sources)."
+}
+  ],
+  "blocks": [
+  {
+  "type": "tab",
+  "name": "tabs",
+  "settings": [
+    {
+  "type": "text",
+  "id": "title",
+  "label": "Tab name",
+  "info": "Enter the tab title (supports dynamic sources)."
+},
+    {
+      "type": "richtext",
+      "id": "tab_content",
+      "label": "Tab content",
+      "info": "Enter the tab content (supports dynamic sources, rich text, etc.)."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_link",
+      "label": "To show page content, enable this link",
+      "default": true
+    },
+    {
+      "type": "page",
+      "id": "tab_page",
+      "label": "Link a page",
+      "info": "Select a page to display its content in this tab (optional)."
+    },
+    {
+      "type": "url",
+      "id": "file_label",
+      "label": "File Upload"
+    }
+  ]
+}
+
+],
+  "presets": [
+    {
+      "name": "Product Description Tabs",
+      "blocks": [
+        {
+          "type": "tab"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+
+{% javascript %}
+document.addEventListener('DOMContentLoaded', function() {
+  const tabs = document.querySelectorAll('.tab-item');
+  const panes = document.querySelectorAll('.tab-pane');
+
+  function isMobile() {
+    return window.innerWidth <= 786;
+  }
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', function() {
+      const tabId = this.getAttribute('data-tab');
+      const targetPane = document.getElementById(tabId);
+
+      if (isMobile()) {
+        // Accordion behavior for mobile
+        if (this.classList.contains('active')) {
+          // Collapse if already active
+          this.classList.remove('active');
+          targetPane.classList.remove('active');
+        } else {
+          // Expand clicked item, collapse others
+          tabs.forEach(t => t.classList.remove('active'));
+          panes.forEach(p => p.classList.remove('active'));
+          this.classList.add('active');
+          targetPane.classList.add('active');
+        }
+      } else {
+        // Tab behavior for desktop
+        tabs.forEach(t => t.classList.remove('active'));
+        panes.forEach(p => p.classList.remove('active'));
+        this.classList.add('active');
+        targetPane.classList.add('active');
+      }
+    });
+  });
+
+  // Adjust layout on window resize
+  window.addEventListener('resize', function() {
+    if (!isMobile()) {
+      // Ensure first tab is active on desktop if no tab is selected
+      if (!document.querySelector('.tab-item.active')) {
+        tabs[0].classList.add('active');
+        panes[0].classList.add('active');
+      }
+    }
+  });
+});
+{% endjavascript %} 
