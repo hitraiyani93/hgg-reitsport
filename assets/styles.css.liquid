@@ -3284,16 +3284,20 @@ h1, .h1-style, h2, .h2-style, h3, .h3-style, h4, .h4-style, h5, .h5-style, h6, .
 }
 
 .overlay-text {
-  position: relative;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  position: absolute;
+  top: 50%;
+  left: 10%;
+  transform: translateY(-50%);
+  width: 100%;
+  max-width:500px;
+  padding: 2rem 1rem;
   text-align: center;
   display: flex;
   align-items: center;
   z-index: 2;
   justify-content: flex-start !important;
+  background: rgba(0,0,0,0.5);
+  border-radius: 6px;
 }
 
 .overlay-text--inline {
@@ -3340,7 +3344,7 @@ h1, .h1-style, h2, .h2-style, h3, .h3-style, h4, .h4-style, h5, .h5-style, h6, .
 .overlay--h-center .overlay-text__rte {
   margin-left: 0;
   margin-right: 0;
-  color: #575454;
+  color: #FFFFFF;
   font-size: 15px;
 }
 
@@ -3352,10 +3356,10 @@ h1, .h1-style, h2, .h2-style, h3, .h3-style, h4, .h4-style, h5, .h5-style, h6, .
 }
 
 @media (min-width: 768px) {
-  .slideshow--navigation-arrows .overlay-text {
+  /* .slideshow--navigation-arrows .overlay-text {
     top: 40px;
     bottom: 40px;
-  }
+  } */
   .image-overlay--bg-box .overlay-text--for-banner .overlay-text__text {
     padding: 30px 45px;
   }
@@ -3379,14 +3383,14 @@ h1, .h1-style, h2, .h2-style, h3, .h3-style, h4, .h4-style, h5, .h5-style, h6, .
 }
 @media (min-width: 1100px) {
   .overlay-text--for-banner .overlay-text__inner {
-           padding: 0px 15px;
+       padding: 0px 15px;
         text-align: left;
   }
 }
 
 .overlay-text .overlay-text__title {
-     color: #043a97;
-    font-size: 26px;
+  color: #FFFFFF;
+  font-size: 26px;
 }
 .overlay-text .overlay-text__title:last-child {
   margin-bottom: 0;
@@ -3491,6 +3495,11 @@ h1, .h1-style, h2, .h2-style, h3, .h3-style, h4, .h4-style, h5, .h5-style, h6, .
   }
   .card-scheme--none .overlay-text-parent--mobile-stack .overlay-text .overlay-text__rte a {
     text-decoration-color: rgb(var(--text), 0.6);
+  }
+  .overlay-text {
+    left: 5%;
+    max-width: 90%;
+    padding: 0;
   }
 }
 .flex {
